@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Unit 4: The Human Body</title>
+<style>
+:root{--bg:#fff8e7;--card:#fff;--tx:#2b2b45;--pr:#6c4de6;--ok:#1b9e5a;--no:#d6336c;--b:#ffd166;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1d1b33;--card:#2a2750;--tx:#f4f1ff;--b:#7a5c00}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:20px/1.5 "Comic Sans MS","Trebuchet MS",system-ui,sans-serif;padding:14px;max-width:900px;margin:auto}
+h1{text-align:center;font-size:1.7rem;margin:.3em 0}h2{margin:.2em 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.card{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 4px 0 rgba(0,0,0,.15);margin:10px 0}
+.home{border:0;color:#fff;font:inherit;font-size:1.4rem;padding:26px 10px;border-radius:26px;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.home:active,.btn:active{transform:translateY(3px)}
+.btn{font:inherit;border:0;border-radius:18px;padding:12px 18px;margin:5px 4px;background:var(--pr);color:#fff;cursor:pointer;min-height:48px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:3px solid var(--pr)}
+.opt.good{background:var(--ok);color:#fff;border-color:var(--ok)}.opt.bad{background:var(--no);color:#fff;border-color:var(--no)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}.tabs .btn{background:#ff8c42}.tabs .btn.on{background:var(--pr)}
+.fun{background:var(--b);color:#2b2b45;border-radius:18px;padding:12px;margin:12px 0}
+.ans{background:#e6f9ee;color:#064e2b;border-radius:14px;padding:10px;margin-top:8px}
+.bad2{background:#ffe3ec;color:#7a0b30;border-radius:14px;padding:10px;margin:8px 0}
+input{font:inherit;padding:10px;border-radius:14px;border:3px solid var(--pr);width:100%;max-width:340px;background:var(--card);color:var(--tx)}
+textarea{font:inherit;width:100%;border-radius:14px;border:3px solid var(--pr);background:var(--card);color:var(--tx)}
+.hide{display:none}.top{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center}
+#pop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9}
+#pop div{background:var(--card);padding:30px;border-radius:30px;text-align:center;font-size:1.5rem;max-width:90%}
+small{opacity:.8}
+</style></head><body>
+<div class="top"><h1 style="flex:1">🧍 Unit 4: The Human Body 🫀</h1><button class="btn" id="sndbtn" onclick="snd=!snd;this.textContent=snd?'🔊 Sound on':'🔇 Sound off'">🔊 Sound on</button></div>
+<div id="home" class="grid">
+<button class="home" style="background:#6c4de6" onclick="go('study')">📖<br>Study</button>
+<button class="home" style="background:#1b9e5a" onclick="go('review')">⭐<br>Review</button>
+<button class="home" style="background:#e8590c" onclick="go('test')">📝<br>Test</button>
+<button class="home" style="background:#d6336c" onclick="go('parents')">👨‍👩‍👧<br>Parents Hub</button></div>
+<div id="study" class="hide"></div><div id="review" class="hide"></div><div id="test" class="hide"></div><div id="parents" class="hide"></div>
+<p style="text-align:center"><small>Based on Learner’s Book pages 53–64 and the Teacher’s Guide.</small></p>
+<div id="pop" onclick="this.style.display='none'"><div id="popt"></div></div>
+<script>
+var snd=true,AC;
+function beep(f,d){if(!snd)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function good(){beep(660,.12);setTimeout(function(){beep(880,.2)},130)}function bad(){beep(220,.3)}
+function reward(t){document.getElementById('popt').innerHTML=t;document.getElementById('pop').style.display='flex';good();setTimeout(function(){document.getElementById('pop').style.display='none'},2200)}
+var $=function(i){return document.getElementById(i)};
+function go(s){['home','study','review','test','parents'].forEach(function(x){$(x).classList.toggle('hide',x!==s&&!(s=='home'&&x=='home'))});if(s!='home')$('home').classList.add('hide');beep(500,.1);
+ var v=$(s);if(s!='home'&&!v.dataset.b){v.dataset.b=1;({study:buildStudy,review:buildReview,test:buildTest,parents:buildParents})[s]()}
+ if(s=='parents')parentsView();scrollTo(0,0)}
+function back(){return '<button class="btn" onclick="go(\'home\')">🏠 Home</button>'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+/* ---------- STUDY ---------- */
+var L=[
+["🧍 Organs","Body outline and organs (pp.53–55)",["A <b>human organ</b> is a part of the body that does a special <b>job</b> (<b>function</b>).","Some organs are on the <b>outside</b>. They are <b>external organs</b>. The <b>ears</b> are external. Their job is hearing. The <b>skin</b> is external too. It covers your body and helps you sense what you touch.","Many organs are <b>inside</b> the body. They are <b>internal organs</b>. The <b>heart</b> is internal. Its job is to move blood around your body.","Five important organs: <b>heart, lungs, stomach, intestines</b> and <b>brain</b>. The <b>kidneys</b> are organs too!"],"There are 78 organs in the human body!"],
+["❤️ Heart","The heart (p.56)",["The <b>heart</b> is about the size of your <b>fist</b>. It sits inside your chest, a little to the left of the centre.","It is a strong <b>muscle</b>. It pumps <b>blood</b> around your body every minute of the day.","Blood goes through tubes called <b>arteries</b>. It goes to your lungs to pick up <b>oxygen</b>. Then it goes to all parts of your body.","Feel your <b>pulse</b> on your neck or wrist. It is the blood pumping round your body."],"Your heart never stops, even when you sleep!"],
+["🫁 Lungs","The lungs (pp.57–58)",["You use your lungs every minute. You <b>inhale</b> (breathe in) air. The air goes down your <b>windpipe</b> to the lungs.","The blood takes <b>oxygen</b> from the air to your heart. Then it takes it to your body.","Blood brings <b>carbon dioxide</b> back to the lungs. You <b>exhale</b> (breathe out) to send it away.","Your <b>breathing rate</b> is how many complete breaths you take in one minute. When you breathe in, your chest gets bigger. When you breathe out, it gets smaller.","The heart and lungs sit close together. They work as a team!"],"You have two lungs. You can measure your chest with a tape measure."],
+["🍎 Stomach","Stomach and intestines (p.59)",["When you eat, your <b>teeth</b> cut and crush food. <b>Saliva</b> mixes with it. Then it is easy to swallow.","Food goes down the <b>oesophagus</b>. This tube squeezes the food down to the <b>stomach</b>.","In the stomach, a strong <b>acid</b> breaks food into smaller pieces.","Food then goes to the <b>intestine</b>. The <b>nutrients</b> (good parts) pass through the wall into your blood.","The body gets rid of <b>waste</b> when you go to the toilet. It is called <b>faeces</b>."],"The oesophagus is a tube that squeezes food down!"],
+["🧠 Brain","The brain (pp.60–61)",["The <b>brain</b> is inside your head. The <b>skull</b> (cranium) protects it.","It is shaped like a wrinkled walnut. It is like a <b>super-computer</b>.","It collects and stores information (your <b>memory</b>), sorts information, tells your body what to do and tells you what to say and think.","Your brain still works when you are asleep.","Try the egg model! The egg shell is like the skull. The cotton wool and fluid protect the brain."],"The brain is made mostly of water. So drink lots of water!"],
+["⚡ Reactions","Reaction time and science in context (pp.62–63)",["<b>Reaction time</b> is how fast your brain sends messages to your muscles.","Test it with a ruler. One learner drops the ruler. Another catches it. Look at the number where the thumb is.","In a fair test, everyone does the same job in turn. Record results in a table.","Doctors use machines to look at organs. An <b>ECG</b> checks the heart. A <b>brain scanner</b> takes pictures of the brain. A <b>bronchoscope</b> goes into the lungs. An <b>endoscope</b> goes down the oesophagus to the stomach and intestine."],"Doctors can take photographs inside your body with a tiny camera!"]];
+function buildStudy(){var h='<div class="card"><h2>📖 Study</h2><div class="tabs">'+L.map(function(l,i){return '<button class="btn" id="tb'+i+'" onclick="lesson('+i+')">'+l[0]+'</button>'}).join('')+'</div></div><div id="les"></div>'+back();$('study').innerHTML=h;lesson(0)}
+function lesson(i){document.querySelectorAll('.tabs .btn').forEach(function(b,j){b.classList.toggle('on',j==i)});var l=L[i];
+ $('les').innerHTML='<div class="card"><h2>'+l[0]+' '+l[1]+'</h2>'+l[2].map(function(p){return '<p>'+p+'</p>'}).join('')+'<div class="fun">💡 <b>Fun fact:</b> '+l[3]+'</div><button class="btn" onclick="say('+i+')">🔊 Read aloud</button><button class="btn" onclick="stopSay()">⏹ Stop</button></div>';beep(600,.1)}
+function say(i){try{speechSynthesis.cancel();var t=L[i][1]+'. '+L[i][2].join(' ').replace(/<[^>]+>/g,'');var u=new SpeechSynthesisUtterance(t);u.lang='en-GB';u.rate=.85;speechSynthesis.speak(u)}catch(e){alert('Read aloud is not available on this device.')}}
+function stopSay(){try{speechSynthesis.cancel()}catch(e){}}
+/* ---------- REVIEW ---------- */
+var R=[
+{t:'tf',q:'The ear is an external organ.',a:'True',w:'The ears are on the outside. Their job is hearing.'},
+{t:'mc',q:'Which organ pumps blood around your body?',o:['Heart','Lungs','Brain'],a:'Heart',w:'The heart is a strong muscle that pumps blood.'},
+{t:'fill',q:'Breathing in is called ____.',a:'inhale',w:'Inhale = breathe in. Exhale = breathe out.'},
+{t:'short',q:'What does the skin do?',a:'It covers your body and helps you sense what you touch.'},
+{t:'tf',q:'The heart and lungs work closely together.',a:'True',w:'The heart sends blood to the lungs to pick up oxygen.'},
+{t:'mc',q:'Which gas do you breathe out?',o:['Oxygen','Carbon dioxide','Water'],a:'Carbon dioxide',w:'Blood brings carbon dioxide to the lungs and you exhale it.'},
+{t:'fill',q:'Food goes down the ____ to the stomach.',a:'oesophagus',w:'The oesophagus is a tube that squeezes food down.'},
+{t:'short',q:'What happens to food in the stomach?',a:'A strong acid breaks the food down into smaller pieces.'},
+{t:'mc',q:'What does the intestine do?',o:['Thinks','Passes nutrients into the blood','Pumps blood'],a:'Passes nutrients into the blood',w:'Nutrients pass through the wall of the intestine into the blood.'},
+{t:'tf',q:'The brain is protected by the skull.',a:'True',w:'The skull is the hard bony case round the brain.'},
+{t:'fill',q:'The brain is made mostly of ____.',a:'water',w:'So we drink lots of water to make sure our brains work well.'},
+{t:'mc',q:'What do we use to test reaction time?',o:['A ruler','A stopwatch','A scale'],a:'A ruler',w:'One learner drops the ruler and another catches it.'},
+{t:'short',q:'Name the five important organs.',a:'Heart, lungs, stomach, intestines and brain.'}];
+function buildReview(){$('review').innerHTML='<div class="card"><h2>⭐ Review</h2><p>Tap an answer. Press “Show answer” if you need help!</p></div>'+R.map(function(r,i){var b='';
+ if(r.t=='tf'||r.t=='mc')b=(r.o||['True','False']).map(function(o){return '<button class="btn opt" onclick="pick('+i+',this)">'+o+'</button>'}).join('');
+ if(r.t=='fill')b='<input id="f'+i+'" placeholder="Type here"> <button class="btn" onclick="chk('+i+')">Check</button>';
+ return '<div class="card"><b>'+(i+1)+'. '+r.q+'</b><div id="rb'+i+'">'+b+'</div><button class="btn" style="background:#ff8c42" onclick="show('+i+')">👀 Show answer</button><div id="ra'+i+'"></div></div>'}).join('')+back()}
+function ansBox(i){var r=R[i];$('ra'+i).innerHTML='<div class="ans">✅ <b>'+esc(r.a)+'</b>'+(r.w?'<br>'+r.w:'')+'</div>'}
+function show(i){ansBox(i);beep(500,.1)}
+function pick(i,b){var r=R[i],ok=b.textContent==r.a;b.classList.add(ok?'good':'bad');ok?good():bad();ansBox(i);if(ok)reward('🌟 Great job!')}
+function chk(i){var v=$('f'+i).value.trim().toLowerCase(),a=R[i].a.toLowerCase();var ok=v==a||(a=='oesophagus'&&v=='esophagus');ok?(good(),reward('🎉 Correct!')):bad();$('ra'+i).innerHTML=ok?'<div class="ans">🎉 Yes! <b>'+R[i].a+'</b></div>':'<div class="bad2">Try again, or press “Show answer”.</div>'}
+/* ---------- TEST ---------- */
+var H={A:'Look at a picture of the body together. Ask: which organs are inside and which are outside?',H:'Find your pulse together at the wrist or neck. Talk about what the heart does.',L:'Count breaths for one minute together. Say inhale and exhale as you do it.',S:'Follow a bite of food from mouth to toilet. Name each part on the way.',B:'Talk about how the brain tells your body what to do. Drink water together!',R:'Play ruler catch at home and compare whose reaction is fastest.'};
+var T=[
+['A','An organ is a part of the body that has a special ____.',['job','colour','toy'],0,'Function means job. Every organ has a job to do.'],
+['A','Which is an EXTERNAL organ?',['Heart','Ear','Stomach'],1,'External means on the outside. The ears and skin are on the outside.'],
+['A','Which is an INTERNAL organ?',['Skin','Ear','Heart'],2,'Internal organs are inside the body. The heart is inside the chest.'],
+['A','The skin is an internal organ.',['True','False'],1,'The skin covers the outside of the body, so it is external.'],
+['A','How many organs are in the human body?',['5','78','200'],1,'The book says there are 78 organs. We learn about five of them.'],
+['A','Which is NOT one of the five organs in this unit?',['Brain','Lungs','Ear'],2,'The five are heart, lungs, stomach, intestines and brain. The ear is an external organ.'],
+['H','What is the job of the heart?',['To pump blood around the body','To crush food','To think'],0,'The heart is a strong muscle that pumps blood.'],
+['H','The heart is about the size of your ____.',['fist','head','foot'],0,'The heart is about the size of your fist.'],
+['H','Blood goes through tubes called ____.',['arteries','windpipes','skulls'],0,'Arteries are tubes that carry blood.'],
+['H','Your pulse is the blood pumping round your body.',['True','False'],0,'You can feel your pulse on your neck or wrist.'],
+['H','Where can you feel your pulse?',['On your knee','On your wrist or neck','On your hair'],1,'An artery is near the surface at the neck and wrist.'],
+['L','Breathing IN is called ____.',['inhale','exhale','pulse'],0,'Inhale = in. Exhale = out.'],
+['L','Breathing OUT is called ____.',['inhale','exhale','pump'],1,'Exhale means breathe out. It sends carbon dioxide away.'],
+['L','Which gas does blood bring back to the lungs to be breathed out?',['Oxygen','Carbon dioxide','Water'],1,'Blood brings carbon dioxide to the lungs. You exhale it.'],
+['L','Air goes down the ____ to the lungs.',['windpipe','oesophagus','artery'],0,'Do not mix up the windpipe (air) with the oesophagus (food).'],
+['L','What do the lungs take from the air?',['Oxygen','Food','Saliva'],0,'The blood picks up oxygen in the lungs.'],
+['L','When you breathe in, your chest gets bigger.',['True','False'],0,'Air fills the lungs and they expand. When you breathe out, the chest gets smaller.'],
+['L','What does the heart send to the lungs?',['Food','Blood','Saliva'],1,'The heart sends blood to the lungs to pick up oxygen.'],
+['S','Food goes down the ____ to the stomach.',['oesophagus','windpipe','skull'],0,'The oesophagus is a tube that squeezes food down.'],
+['S','What does the strong acid in the stomach do?',['Breaks food into smaller pieces','Pumps blood','Makes you hear'],0,'The stomach acid breaks the food into smaller pieces.'],
+['S','Nutrients pass into the blood through the wall of the ____.',['intestine','brain','ear'],0,'The intestine takes the good parts (nutrients) into the blood.'],
+['S','The waste your body gets rid of is called faeces.',['True','False'],0,'Faeces is the scientific name for poo.'],
+['S','What mixes with food in your mouth to make it easy to swallow?',['Saliva','Blood','Acid'],0,'Saliva mixes with the food your teeth crush.'],
+['B','What protects the brain?',['The skull','The skin','The heart'],0,'The skull is the hard bony case round the brain.'],
+['B','The brain is shaped like a wrinkled ____.',['walnut','banana','ball'],0,'The book compares the brain to a wrinkled walnut.'],
+['B','The brain is made mostly of ____.',['water','sand','air'],0,'The brain is mostly water. So we drink lots of water.'],
+['B','In our egg model, the egg shell stands for the ____.',['skull','heart','lungs'],0,'The shell is the outer layer of protection, like the skull.'],
+['R','Reaction time is how fast we ____ to something.',['react','sleep','grow'],0,'It shows how fast your brain sends messages to your muscles.'],
+['R','Which machine goes down the oesophagus to look at the stomach?',['Endoscope','ECG machine','Ruler'],0,'An endoscope has a light and a camera on the end.'],
+['R','What does an ECG machine help doctors check?',['The heart','The skin','The ears'],0,'ECG helps doctors see how the heart is working.']];
+var cur=0,sc=0,mist=[],nm='';
+function buildTest(){$('test').innerHTML='<div class="card"><h2>📝 Test</h2><p>'+T.length+' questions. What is your name?</p><input id="nm" placeholder="Your name"><br><button class="btn" onclick="startT()">🚀 Start</button></div>'+back()}
+function startT(){nm=$('nm').value.trim();if(!nm){alert('Please type your name first.');return}cur=0;sc=0;mist=[];q()}
+function q(){var t=T[cur];$('test').innerHTML='<div class="card"><small>Question '+(cur+1)+' of '+T.length+'</small><h2>'+t[1]+'</h2>'+t[2].map(function(o,i){return '<button class="btn opt" onclick="ans('+i+')">'+o+'</button>'}).join('')+'</div>'}
+function ans(i){var t=T[cur];if(i==t[3]){sc++;good()}else{mist.push(cur);bad()}cur++;cur<T.length?q():fin()}
+function code(){var o={n:nm,s:sc,t:T.length,w:mist,d:new Date().toISOString().slice(0,10)};return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function fin(){var c=code();save(c);var p=Math.round(sc/T.length*100);
+ $('test').innerHTML='<div class="card"><h2>'+(p>=80?'🏆':'🌟')+' Well done, '+esc(nm)+'!</h2><p style="font-size:1.6rem">Score: <b>'+sc+' / '+T.length+'</b> ('+p+'%)</p>'+(mist.length?'<h3>Let’s look at the mistakes</h3>'+mist.map(function(i){var t=T[i];return '<div class="bad2"><b>'+t[1]+'</b><br>✅ '+t[2][t[3]]+'<br>💬 '+t[4]+'</div>'}).join(''):'<p>🎉 No mistakes!</p>')+'<h3>Result code</h3><p>Send this to your teacher or parent:</p><textarea rows="3" readonly onclick="this.select()">'+c+'</textarea><br><button class="btn" onclick="startT()">🔁 Try again</button></div>'+back();
+ if(p>=80)reward('🏆 Superstar!');else reward('🌟 Good try!')}
+/* ---------- PARENTS ---------- */
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function save(c){var a=JSON.parse(ls('u4res')||'[]');if(a.indexOf(c)<0)a.push(c);ls('u4res',JSON.stringify(a))}
+var ok=false;
+function buildParents(){}
+function parentsView(){var pin=ls('u4pin'),h='<div class="card"><h2>👨‍👩‍👧 Parents Hub</h2>';
+ if(!ok){h+=pin?'<p>Enter your PIN:</p><input id="pin" type="password" inputmode="numeric" maxlength="8"><br><button class="btn" onclick="login()">🔓 Log in</button>':'<p>Create a PIN (4 to 8 digits):</p><input id="pin" type="password" inputmode="numeric" maxlength="8"><br><button class="btn" onclick="mk()">🔐 Create PIN</button>';
+  h+='<p><small>This PIN is a simple lock on this device. It is not strong security.</small></p></div>'+back()}
+ else{var a=JSON.parse(ls('u4res')||'[]');h+='<p><small>Results are saved only in this device’s browser.</small></p><h3>Paste a result code</h3><textarea id="pc" rows="2"></textarea><br><button class="btn" onclick="imp()">➕ Add</button></div>';
+  h+=a.length?a.map(show2).join(''):'<div class="card">No tests yet.</div>';h+='<button class="btn" onclick="ok=false;parentsView()">🔒 Log out</button>'+back()}
+ $('parents').innerHTML=h}
+function mk(){var p=$('pin').value;if(!/^\d{4,8}$/.test(p)){alert('Use 4 to 8 digits.');return}ls('u4pin',p);ok=true;parentsView()}
+function login(){if($('pin').value===ls('u4pin')){ok=true;parentsView();good()}else{bad();alert('Wrong PIN. Try again.')}}
+function imp(){var c=$('pc').value.trim();try{var o=JSON.parse(decodeURIComponent(escape(atob(c))));if(!o.n||!Array.isArray(o.w))throw 0;save(c);parentsView()}catch(e){alert('That code does not look right.')}}
+function show2(c){try{var o=JSON.parse(decodeURIComponent(escape(atob(c))));
+ return '<div class="card"><h3>📝 '+esc(o.n)+' – '+(+o.s)+' / '+(+o.t)+' <small>'+esc(o.d||'')+'</small></h3>'+(o.w.length?o.w.map(function(i){var t=T[i];if(!t)return '';return '<div class="bad2"><b>'+t[1]+'</b><br>✅ Correct: '+t[2][t[3]]+'<br>❓ Why mistakes happen: '+t[4]+'<br>🏠 Help at home: '+H[t[0]]+'</div>'}).join(''):'<p>🎉 No mistakes!</p>')+'</div>'}catch(e){return ''}}
+</script></body></html>
